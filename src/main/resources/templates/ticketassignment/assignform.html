@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <title>Assignment Form</title>
+</head>
+
+<body>
+	<div>
+		<form th:action="@{/ticketassignment/assign/{id}(id=${ticket.id})}" method="post" hx:post="@{/ticketassignment/assign/{id}(id=${ticket.id})}"  hx-target="" hx-swap="outerHTML">
+			<!--<form th:action="@{${ticket.id} != null ? '/users/' + ${ticket.id} : '/users'}" method="post" hx-post="@{${ticket.id} != null ? '/users/' + ${ticket.id} : '/users'}" hx-target="#userRows" hx-swap="outerHTML">-->
+	        <label>Ticket Id: <p th:text = "${ticket.id}"></p></label><br/>
+			<label>Title: <p th:text = "${ticket.title}"></p> Application: <p th:text = "${ticket.applicationId}"></p></label><br/>
+	        <label>Ticket Description: <p th:text = "${ticket.description}"></p></label><br/>
+	        <label>Available Technitions: </label><br/>
+			<select name="technitionId" id="technitionId">
+				<option value="0">Select Technition</option>
+				<option th:each="technition : ${technitions}" th:value="${technition.id}" th:text="${technition.firstName} + ',' + ${technition.lastName}" th:selected="${technition.id == assignment.technicianId}"></option>
+			</select>
+	        <button type="submit">Save</button>
+	    </form>
+	</div>
+</body>
+</html>
+
+
