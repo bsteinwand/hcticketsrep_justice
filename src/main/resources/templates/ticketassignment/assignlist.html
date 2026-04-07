@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+
+<head>
+    <title>Ticket List</title>
+</head>
+
+<body>
+<div >
+    <!--<button hx-get="/user/new" hx-target="#userForm" hx-swap="innerHTML">New User</button>-->
+
+    <table>
+        <thead>
+        <tr><th>Title</th></tr>
+        </thead>
+        <tbody id="ticketRows">
+            <tr th:each="ticket : ${tickets}" th:id="${'ticket-' + ticket.id}">
+                <td th:text="${ticket.title}"></td>
+				<td>
+					<button>Edit</button>
+				</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="userForm"></div>
+</div>
+</body>
+</html>
