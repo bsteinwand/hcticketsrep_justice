@@ -78,16 +78,22 @@ public class TicketAssignmentController
     	{
     		return "user/list";
     	}
+        TicketAssignmentCreateDto ticketAssignmentCreateDto = new TicketAssignmentCreateDto(ticket.id(),1,user.id());
+
+
     	model.addAttribute("technitions", availTechs);
     	model.addAttribute("ticket", ticket);
-        model.addAttribute("assignment", new TicketAssignmentCreateDto(ticket.id(),1,user.id()));
+        model.addAttribute("assignment", ticketAssignmentCreateDto);
         return "ticketassignment/assignform";
     }
     
-    @PostMapping("/assign/{id}")
-    @HxRequest
-    public String createTicketAssignment(@Valid @ModelAttribute TicketAssignmentCreateDto assignment, @RequestParam(required = false) BindingResult result, Model model) {
+    @PostMapping
+    //@HxRequest
+    public String createTicketAssignment(@Valid @ModelAttribute TicketAssignmentCreateDto assignment, BindingResult result, Model model) {
         System.out.println("Created");
+        System.out.println("TicketId:"+ assignment.ticketId());
+        System.out.println("techId:" + assignment.technicianId());
+        System.out.println("createdBy:" + assignment.assignedBy());
     	if (result.hasErrors()) {
             //model.addAttribute("roles", List.of("USER", "ADMIN"));
             return "user/list";

@@ -11,7 +11,7 @@
             <span th:if="${#fields.hasErrors('user.email')}" th:errors="*{user.email}" style="color:red"></span>
         </label><br/>
         <label>Select Role:</label><br/>
-		<select name="roleId" id="roleId">
+		<select name="roleId" id="roleId" required>
 			<option value="0">Select Role</option>
 			<option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.roleName}" th:selected="${role.id == user.roleId}"></option>
 		</select>
