@@ -1,21 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/main}">
-
+      layout:decorate="~{layouts/ticketAssignment}">
 <head>
     <title>Ticket List</title>
 </head>
 
-<body>
-<div >
-    <!--<button hx-get="/user/new" hx-target="#userForm" hx-swap="innerHTML">New User</button>-->
+<script>
+	if(${tickets} == null)
+	{
+		document.getElementById("non").innerHTML = "There is no tickets for this user";
+	}
+</script>
 
+<body>
+<div layout:fragment="content">
+	<div id = non ></div>
+    <!--<button hx-get="/user/new" hx-target="#userForm" hx-swap="innerHTML">New User</button>-->
+	
     <table>
         <thead>
-        <tr><th>Title</th></tr>
+        <tr><th th:text = "${user.firstName + ', ' + user.lastName}" id = "rowHead">If you are seeing this something failed</th></tr>
         </thead>
-        <tbody id="ticketRows">
+        <tbody id="ticketRows" th:fragment="ticketRows">
             <tr th:each="ticket : ${tickets}" th:id="${'ticket-' + ticket.id}">
                 <td th:text="${ticket.title}"></td>
 				<td>
@@ -25,7 +32,7 @@
         </tbody>
     </table>
 
-    <div id="userForm"></div>
+    <div id="assignForm"></div>
 </div>
 </body>
 </html>

@@ -21,6 +21,7 @@ import edu.helenacollege.hctickets.dto.UserApplicationRoleResponseDto;
 import edu.helenacollege.hctickets.dto.UserCreateDto;
 import edu.helenacollege.hctickets.dto.UserResponseDto;
 import edu.helenacollege.hctickets.model.User;
+import edu.helenacollege.hctickets.repository.TicketAssignmentRepository;
 import edu.helenacollege.hctickets.service.DataCacheService;
 import edu.helenacollege.hctickets.service.TicketService;
 import edu.helenacollege.hctickets.service.UserApplicationRoleService;
@@ -38,18 +39,21 @@ public class TicketAssignmentController
     private final TicketService ticketService;
     private final UserApplicationRoleService userAppRoleService;
     private final TicketAssignmentServiceImpl ticketAssignmentService;
+    private final TicketAssignmentRepository ticketAssignmentRepository;
 
     public TicketAssignmentController(UserService userService, DataCacheService dataCacheService, TicketService ticketService, 
-    		UserApplicationRoleService appRoleService, TicketAssignmentServiceImpl ticketAssignmentService) {
+    		UserApplicationRoleService appRoleService, TicketAssignmentServiceImpl ticketAssignmentService,
+    		TicketAssignmentRepository ticketAssignmentRepository) {
         this.userService = userService;
         this.dataCacheService = dataCacheService;
         this.ticketService = ticketService;
         this.userAppRoleService = appRoleService;
         this.ticketAssignmentService = ticketAssignmentService;
+        this.ticketAssignmentRepository = ticketAssignmentRepository;
     }
     
     @GetMapping
-    public String listUsers(Model model) {
+    public String listTicketAssignments(Model model) {
 //        List<User> users = userService.findAll();
     	List<UserResponseDto> users = userService.findAll();
     	TicketResponseDto ticket = ticketService.findById(1);
@@ -90,10 +94,6 @@ public class TicketAssignmentController
     @PostMapping
     //@HxRequest
     public String createTicketAssignment(@Valid @ModelAttribute TicketAssignmentCreateDto assignment, BindingResult result, Model model) {
-        System.out.println("Created");
-        System.out.println("TicketId:"+ assignment.ticketId());
-        System.out.println("techId:" + assignment.technicianId());
-        System.out.println("createdBy:" + assignment.assignedBy());
     	if (result.hasErrors()) {
             //model.addAttribute("roles", List.of("USER", "ADMIN"));
             return "user/list";
@@ -101,26 +101,28 @@ public class TicketAssignmentController
         //userService.saveUser(user, roles != null ? roles : Set.of());
         ticketAssignmentService.create(assignment);
         model.addAttribute("users", userService.findAll());
-        return "user/list";
+        return "ticketassignment/assignlist";
     }
     
     @GetMapping("/{id}")
-    public String editUserForm(@PathVariable Integer id, Model model) {
+    public String getTechnitionAssignments(@PathVariable Integer id, Model model) {
     	UserResponseDto user = userService.findById(id);
     	List<TicketAssignmentResponseDto> assignments = ticketAssignmentService.findAll();
     	List<TicketResponseDto> tickets = new ArrayList<TicketResponseDto>();
         if (user == null) {
             return "user/list"; // fallback
         }
-        for(TicketAssignmentResponseDto assignment : assignments)
+        for(TicketAssignmentResponseDto assignment : ticketAssignmentService.findAll())
         {
-        	if(assignment.technicianId() == user.id())
-        	{
-        		tickets.add(ticketService.findById(assignment.id()));
-        	}
+        	System.out.println(assignment);
+        	System.out.println(user.id());
+//        	if(assignment.technicianId() == user.id())
+//        	{
+        	//	tickets.add(ticketService.findById(assignment.ticketId()));
+        	//}
         }
         model.addAttribute("user", user);
         model.addAttribute("tickets", tickets);
-        return "ticketassignment/assignform";
+        return "ticketassignment/assignlist";
     }
 }
