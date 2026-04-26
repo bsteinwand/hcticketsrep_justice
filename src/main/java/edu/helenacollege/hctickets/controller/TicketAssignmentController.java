@@ -69,12 +69,21 @@ public class TicketAssignmentController
     public String assignTicketForm(Model model,@PathVariable int ticketId) {
     	TicketResponseDto ticket = ticketService.findById(ticketId);
     	List<UserResponseDto> availTechs = new ArrayList<UserResponseDto>();
-    	List<UserApplicationRoleResponseDto> Techs = userAppRoleService.findAll();
-    	for(UserApplicationRoleResponseDto t : Techs)
+    	List<UserApplicationRoleResponseDto> techs = userAppRoleService.findAll();
+        System.err.println("Size:" + techs.size());
+    	for(UserApplicationRoleResponseDto t : techs)
     	{
-    		if(t.appId() == ticket.applicationId() || t.appRoleId() >= 3 || userService.findById(t.userId()).status().equals("Active"))
+            System.err.println(t.userId());
+            System.err.println(t.appId());
+            System.err.println(t.appRoleId());
+            UserResponseDto userResponseDto = userService.findById(t.userId());
+            System.err.println(ticket.applicationId());
+            System.err.println(userResponseDto.status());
+            System.err.println(t.appRoleId());
+    		if(t.appId().equals(ticket.applicationId()) && t.appRoleId() >= 3 && userResponseDto.status().equals("Active"))
     		{
-    			availTechs.add(userService.findById(t.id()));
+    			availTechs.add(userResponseDto);
+                System.err.println(userResponseDto);
     		}
     	}
     	UserResponseDto user = userService.findById(1);
@@ -85,7 +94,7 @@ public class TicketAssignmentController
         TicketAssignmentCreateDto ticketAssignmentCreateDto = new TicketAssignmentCreateDto(ticket.id(),1,user.id());
 
 
-    	model.addAttribute("technitions", availTechs);
+    	model.addAttribute("technicians", availTechs);
     	model.addAttribute("ticket", ticket);
         model.addAttribute("assignment", ticketAssignmentCreateDto);
         return "ticketassignment/assignform";
@@ -98,16 +107,19 @@ public class TicketAssignmentController
             //model.addAttribute("roles", List.of("USER", "ADMIN"));
             return "user/list";
         }
-        //userService.saveUser(user, roles != null ? roles : Set.of());
         ticketAssignmentService.create(assignment);
         model.addAttribute("users", userService.findAll());
-        return "ticketassignment/assignlist";
+
+        //return "ticketassignment/assignlist";
+        return "redirect:ticketassignment/" + assignment.technicianId();
     }
     
     @GetMapping("/{id}")
     public String getTechnitionAssignments(@PathVariable Integer id, Model model) {
+        System.out.println("ID:" + id);
     	UserResponseDto user = userService.findById(id);
-    	List<TicketAssignmentResponseDto> assignments = ticketAssignmentService.findAll();
+    	List<TicketAssignmentResponseDto> assignments = ticketAssignmentService.findAll().stream().filter(ta -> ta.technicianId().equals(id)).toList();
+        System.out.println("Count:" + assignments.size());
     	List<TicketResponseDto> tickets = new ArrayList<TicketResponseDto>();
         if (user == null) {
             return "user/list"; // fallback
@@ -118,7 +130,7 @@ public class TicketAssignmentController
         	System.out.println(user.id());
 //        	if(assignment.technicianId() == user.id())
 //        	{
-        	//	tickets.add(ticketService.findById(assignment.ticketId()));
+        		tickets.add(ticketService.findById(assignment.ticketId()));
         	//}
         }
         model.addAttribute("user", user);

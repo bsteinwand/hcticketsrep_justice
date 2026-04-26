@@ -87,6 +87,11 @@ public class UserApplicationRoleServiceImpl implements UserApplicationRoleServic
     @Override
     @Transactional(readOnly = true)
     public List<UserApplicationRoleResponseDto> findAll() {
+        List<UserApplicationRole> uars = repository.findAll();
+        System.err.println(uars.getFirst().getUser());
+        System.err.println(uars.getFirst().getApplication());
+        System.err.println(uars.getFirst().getApplicationRole());
+
         return repository.findAll().stream()
                 .map(mapper::toResponseDto)
                 .toList();
