@@ -1,5 +1,6 @@
 package edu.helenacollege.hctickets.controller;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +84,7 @@ public class TaskController
     		model.addAttribute("priorities", priorities);
         	model.addAttribute("technitions", technitions);
         	model.addAttribute("app", applicationService.findById(ticket.applicationId()));
-            model.addAttribute("task", new TaskCreateDto("", "", ticket.id(), user.id(), "Incomplete","",null));
+            model.addAttribute("task", new TaskCreateDto("", "", ticket.id(), user.id(), "Incomplete","",(OffsetDateTime.now()).plusDays(2)));
             return "task/taskform";
     	}
     	if(assign == null && ticket == null && user.id() != assign.technicianId())
@@ -95,7 +96,7 @@ public class TaskController
     	model.addAttribute("priorities", priorities);
     	model.addAttribute("technitions", technitions);
     	model.addAttribute("app", applicationService.findById(ticket.applicationId()));
-        model.addAttribute("task", new TaskCreateDto("", "", ticket.id(), user.id(), "Incomplete","",null));
+        model.addAttribute("task", new TaskCreateDto("", "", ticket.id(), user.id(), "Incomplete","",(OffsetDateTime.now()).plusDays(2)));
         return "task/taskform";
     }
     

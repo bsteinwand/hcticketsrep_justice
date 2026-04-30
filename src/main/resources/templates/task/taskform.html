@@ -14,6 +14,9 @@
 			<label>Name: <input type="name" name="name" th:value="${task.name}" required/>
 			    <span th:if="${#fields.hasErrors('task.name')}" th:errors="*{task.name}" style="color:red"></span>
 			</label><br/>
+			<label>Due Date: <input type="date" name="dueDate" th:value="${task.dueDate}" required/>
+				<span th:if="${#fields.hasErrors('task.dueDate')}" th:errors="*{task.dueDate}" style="color:red"></span>
+			</label><br/>
 			<input type="hidden" name="ticketId" th:field="${task.ticketId}" />
 			<input type="hidden" name="userId" th:field="${task.userId}" />
 			<input type="hidden" name="status" th:field="${task.status}" />
