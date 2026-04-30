@@ -47,6 +47,8 @@ public class TaskServiceImpl implements TaskService {
         entity.setDetails(dto.details());
         entity.setStatus(dto.status());
         entity.setCreationDate(OffsetDateTime.now());
+        entity.setPriority(dto.priority());
+        entity.setDueDate(dto.dueDate());
 
         entity.setTicket(
                 ticketRepository.findById(dto.ticketId())

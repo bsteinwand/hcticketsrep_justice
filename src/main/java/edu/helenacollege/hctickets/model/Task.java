@@ -54,6 +54,32 @@ public class Task {
     @Column(name = "CompletedDate")
     private OffsetDateTime completedDate;
     
+    @Column(name = "Priority")
+    private String priority;
+    
+    @Column(name = "DueDate")
+    private OffsetDateTime dueDate;
+    
+	public OffsetDateTime getDueDate()
+	{
+		return dueDate;
+	}
+
+	public void setDueDate(OffsetDateTime dueDate)
+	{
+		this.dueDate = dueDate;
+	}
+
+	public String getPriority()
+	{
+		return priority;
+	}
+
+	public void setPriority(String priority)
+	{
+		this.priority = priority;
+	}
+
 	public Task() {
 		super();
 	}

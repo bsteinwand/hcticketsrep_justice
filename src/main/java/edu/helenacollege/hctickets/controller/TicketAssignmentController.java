@@ -12,22 +12,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.helenacollege.hctickets.dto.TicketAssignmentCreateDto;
 import edu.helenacollege.hctickets.dto.TicketAssignmentResponseDto;
 import edu.helenacollege.hctickets.dto.TicketResponseDto;
 import edu.helenacollege.hctickets.dto.UserApplicationRoleResponseDto;
-import edu.helenacollege.hctickets.dto.UserCreateDto;
 import edu.helenacollege.hctickets.dto.UserResponseDto;
-import edu.helenacollege.hctickets.model.User;
 import edu.helenacollege.hctickets.repository.TicketAssignmentRepository;
 import edu.helenacollege.hctickets.service.DataCacheService;
 import edu.helenacollege.hctickets.service.TicketService;
 import edu.helenacollege.hctickets.service.UserApplicationRoleService;
 import edu.helenacollege.hctickets.service.UserService;
 import edu.helenacollege.hctickets.service.impl.TicketAssignmentServiceImpl;
-import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import jakarta.validation.Valid;
 
 @Controller
@@ -70,26 +66,19 @@ public class TicketAssignmentController
     	TicketResponseDto ticket = ticketService.findById(ticketId);
     	List<UserResponseDto> availTechs = new ArrayList<UserResponseDto>();
     	List<UserApplicationRoleResponseDto> techs = userAppRoleService.findAll();
-        System.err.println("Size:" + techs.size());
     	for(UserApplicationRoleResponseDto t : techs)
     	{
-            System.err.println(t.userId());
-            System.err.println(t.appId());
-            System.err.println(t.appRoleId());
             UserResponseDto userResponseDto = userService.findById(t.userId());
-            System.err.println(ticket.applicationId());
-            System.err.println(userResponseDto.status());
-            System.err.println(t.appRoleId());
-    		if(t.appId().equals(ticket.applicationId()) && t.appRoleId() >= 3 && userResponseDto.status().equals("Active"))
+    		if(t.appId().equals(ticket.applicationId()) && t.appRoleId() <= 3 && userResponseDto.status().equals("Active"))
     		{
     			availTechs.add(userResponseDto);
-                System.err.println(userResponseDto);
     		}
     	}
     	UserResponseDto user = userService.findById(1);
-    	if(ticket == null || !user.status().equals("Active"))// || user.roleId() >= 3) //byon does not have a role id but works otherwise
+    	if(ticket == null && !user.status().equals("Active") && user.roleId() <= 3)
     	{
-    		return "user/list";
+    		model.addAttribute("fail","ticket does not exist or your account is not valid");
+    		return "ticketassignment/fail";
     	}
         TicketAssignmentCreateDto ticketAssignmentCreateDto = new TicketAssignmentCreateDto(ticket.id(),1,user.id());
 
@@ -104,34 +93,26 @@ public class TicketAssignmentController
     //@HxRequest
     public String createTicketAssignment(@Valid @ModelAttribute TicketAssignmentCreateDto assignment, BindingResult result, Model model) {
     	if (result.hasErrors()) {
-            //model.addAttribute("roles", List.of("USER", "ADMIN"));
-            return "user/list";
+    		model.addAttribute("fail",result.getAllErrors());
+            return "ticketassignment/fail";
         }
         ticketAssignmentService.create(assignment);
         model.addAttribute("users", userService.findAll());
-
-        //return "ticketassignment/assignlist";
         return "redirect:ticketassignment/" + assignment.technicianId();
     }
     
     @GetMapping("/{id}")
     public String getTechnitionAssignments(@PathVariable Integer id, Model model) {
-        System.out.println("ID:" + id);
+        if (userService.findById(id) == null) {
+        	model.addAttribute("fail","There is no user by that ID");
+        	return "ticketasignment/fail";
+        }
     	UserResponseDto user = userService.findById(id);
     	List<TicketAssignmentResponseDto> assignments = ticketAssignmentService.findAll().stream().filter(ta -> ta.technicianId().equals(id)).toList();
-        System.out.println("Count:" + assignments.size());
     	List<TicketResponseDto> tickets = new ArrayList<TicketResponseDto>();
-        if (user == null) {
-            return "user/list"; // fallback
-        }
-        for(TicketAssignmentResponseDto assignment : ticketAssignmentService.findAll())
+        for(TicketAssignmentResponseDto assignment : assignments)
         {
-        	System.out.println(assignment);
-        	System.out.println(user.id());
-//        	if(assignment.technicianId() == user.id())
-//        	{
         		tickets.add(ticketService.findById(assignment.ticketId()));
-        	//}
         }
         model.addAttribute("user", user);
         model.addAttribute("tickets", tickets);

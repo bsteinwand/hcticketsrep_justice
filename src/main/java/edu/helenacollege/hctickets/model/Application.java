@@ -32,7 +32,57 @@ public class Application {
     @Column(name = "Description", nullable = false, length = 200)
     private String description;
 
-    @Column(name = "CreationDate", nullable = false)
+    public Integer getId()
+	{
+		return id;
+	}
+
+	public void setId(Integer id)
+	{
+		this.id = id;
+	}
+
+	public String getAppName()
+	{
+		return appName;
+	}
+
+	public void setAppName(String appName)
+	{
+		this.appName = appName;
+	}
+
+	public String getDescription()
+	{
+		return description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public OffsetDateTime getCreationDate()
+	{
+		return creationDate;
+	}
+
+	public void setCreationDate(OffsetDateTime creationDate)
+	{
+		this.creationDate = creationDate;
+	}
+
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(String status)
+	{
+		this.status = status;
+	}
+
+	@Column(name = "CreationDate", nullable = false)
     private OffsetDateTime creationDate;
 
     @Column(name = "Status", nullable = false, length = 20)

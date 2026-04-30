@@ -10,5 +10,7 @@ public record TaskResponseDto(
         Integer userId,
         String status,
         OffsetDateTime creationDate,
-        OffsetDateTime completedDate
+        OffsetDateTime completedDate,
+        OffsetDateTime dueDate,
+        String priority
 ) {}

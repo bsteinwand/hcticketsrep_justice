@@ -6,16 +6,8 @@
     <title>Ticket List</title>
 </head>
 
-<script>
-	if(${tickets} == null)
-	{
-		document.getElementById("non").innerHTML = "There is no tickets for this user";
-	}
-</script>
-
 <body>
 <div layout:fragment="content">
-	<div id = non ></div>
     <!--<button hx-get="/user/new" hx-target="#userForm" hx-swap="innerHTML">New User</button>-->
 	
     <table>
@@ -31,6 +23,7 @@
             </tr>
         </tbody>
     </table>
+	<div th:if="${#lists.isEmpty(tickets)}"}>There was no tickets assigned to this Technition</div>
 
     <div id="assignForm"></div>
 </div>
