@@ -1,0 +1,1 @@
+Alter table hctickets.ticketassignment alter column ActiveDate set Default CURRENT_TIMESTAMP;

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <title>Task Form</title>
+</head>
+
+<body>
+	<div>
+		<form th:action="@{/task}" method="post">
+			<!--<form th:action="@{${ticket.id} != null ? '/users/' + ${ticket.id} : '/users'}" method="post" hx-post="@{${ticket.id} != null ? '/users/' + ${ticket.id} : '/users'}" hx-target="#userRows" hx-swap="outerHTML">-->
+	        <label>Application Name: <p th:text = "${app.appName}"></p></label><br/>
+			<label>Name: <input type="name" name="name" th:value="${task.name}" required/>
+			    <span th:if="${#fields.hasErrors('task.name')}" th:errors="*{task.name}" style="color:red"></span>
+			</label><br/>
+			<input type="hidden" name="ticketId" th:field="${task.ticketId}" />
+			<input type="hidden" name="userId" th:field="${task.userId}" />
+			<input type="hidden" name="status" th:field="${task.status}" />
+			<label>Details: <textarea type="details" name="details" th:value="${task.details}" required></textarea>
+				<span th:if="${#fields.hasErrors('task.details')}" th:errors="*{task.details}" style="color:red"></span>
+			</label><br/>
+			<select name="priority" id="priority">
+				<option value="0">Select Priority</option>
+				<option th:each="priority : ${priorities}" th:value="${priority}" th:text="${priority}" th:selected="${priority == task.priority}"></option>
+			</select><br/>
+			<select name="technicianId" id="technicianId">
+				<option value="0">Select Technician</option>
+				<option th:each="technician : ${technitions}" th:value="${technician.id}" th:text="${technician.firstName} + ',' + ${technician.lastName}" th:selected="${technician.id == task.userId}"></option>
+			</select><br/>
+	        <button type="submit">Save</button>
+	    </form>
+	</div>
+</body>
+</html>
+
+

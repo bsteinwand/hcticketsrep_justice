@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Ticket List</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <!--<button hx-get="/user/new" hx-target="#userForm" hx-swap="innerHTML">New User</button>-->
+	
+    <table>
+        <thead>
+        <tr><th th:text = "${user.firstName + ', ' + user.lastName}" id = "rowHead">If you are seeing this something failed</th></tr>
+        </thead>
+        <tbody id="taskRows" th:fragment="taskRows">
+            <tr th:each="task : ${tasks}" th:id="${'task-' + task.id}">
+				<td th:text="${'Id:' + task.id}"></td></br>
+                <td th:text="${'Name:' + task.name + '::'}"></td>
+				<td th:text="${'Details:' + task.details + '::'}"></td>
+				<td th:text="${'status:' + task.status + '::'}"></td>
+				<td th:text="${'Due Date:' + task.dueDate + '::'}"></td>
+				<td>
+					<button>Edit</button>
+				</td>
+            </tr>
+        </tbody>
+    </table>
+	<div th:if="${#lists.isEmpty(tasks)}"}>No Pending Tasks</div>
+
+    <div id="assignForm"></div>
+</div>
+</body>
+</html>
